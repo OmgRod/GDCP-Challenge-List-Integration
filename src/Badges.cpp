@@ -1,9 +1,7 @@
+/*
 #include <Geode/Geode.hpp>
 #include <Geode/modify/ProfilePage.hpp>
 #include <Geode/modify/CommentCell.hpp>
-
-#include "Cache.hpp"
-#include "Includes.hpp"
 
 using namespace geode::prelude;
 
@@ -122,3 +120,4 @@ class $modify(MyCommentCell, CommentCell) {
         badgePopup(sender);
     }
 };
+*/

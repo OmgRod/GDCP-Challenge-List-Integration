@@ -1,7 +1,11 @@
+# v2.1.3
+
+- Switched to Badges API Reimagined
+
 # v2.1.2
 
-* Fixed two crashes with weekly popup
-* Fixed bug with the fix for the compact lists incompatibility .
+- Fixed two crashes with weekly popup
+- Fixed bug with the fix for the compact lists incompatibility .
 
 # v2.1.1
 

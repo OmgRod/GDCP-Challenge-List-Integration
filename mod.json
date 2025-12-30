@@ -8,7 +8,7 @@
 	},
 	"id": "gdcpteam.challenge-list",
 	"name": "GDCP List Integration",
-	"version": "v2.1.2",
+	"version": "v2.1.3",
 	"developers": ["silenceglobally", "OmgRod", "Zilko"],
 	"description": "Challenge list for GD Challenge Progression",
 	"links": {

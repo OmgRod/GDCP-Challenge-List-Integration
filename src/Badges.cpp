@@ -130,7 +130,7 @@ class $modify(MyCommentCell, CommentCell) {
 $on_mod(Loaded) {
     BadgesAPI::registerBadge(
         "challenge-progression-moderator"_spr,
-        "GD Challenge Progression Moderartor",
+        "GD Challenge Progression Moderator",
         "GD Challenge Progression list moderators!\n\n<cr>one of them really likes Congregation...</c>",
         [] {
             CCSprite* helper = CCSprite::createWithSpriteFrameName("GDCP_moderator.png"_spr);

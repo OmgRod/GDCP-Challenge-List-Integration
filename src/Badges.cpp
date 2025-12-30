@@ -1,9 +1,11 @@
 #include <Geode/Geode.hpp>
-#include <Geode/modify/ProfilePage.hpp>
-#include <Geode/modify/CommentCell.hpp>
+// #include <Geode/modify/ProfilePage.hpp>
+// #include <Geode/modify/CommentCell.hpp>
 
 #include "Cache.hpp"
 #include "Includes.hpp"
+
+#include <alphalaneous.badges_api_reimagined/include/BadgesAPI.hpp>
 
 using namespace geode::prelude;
 
@@ -25,6 +27,7 @@ static std::optional<Role> getRole(int accountID) {
     return std::nullopt;
 }
 
+/*
 void badgePopup(CCObject* sender) {
     switch (sender->getTag()) {
         case 1: FLAlertLayer::create("GDCP Owner", "The owner of the GDCP list!\n<cr>theres only one of these...</c>", "OK")->show(); break;
@@ -122,3 +125,79 @@ class $modify(MyCommentCell, CommentCell) {
         badgePopup(sender);
     }
 };
+*/
+
+$on_mod(Loaded) {
+    BadgesAPI::registerBadge(
+        "challenge-progression-moderator"_spr,
+        "GD Challenge Progression Moderartor",
+        "GD Challenge Progression list moderators!\n\n<cr>one of them really likes Congregation...</c>",
+        [] {
+            CCSprite* helper = CCSprite::createWithSpriteFrameName("GDCP_moderator.png"_spr);
+            helper->setTag(4);
+            return helper;
+        },
+        [] (const Badge& badge, const UserInfo& info) {
+            if (!isEditor(info.accountID)) return;
+
+            auto role = getRole(info.accountID);
+            if (!role.has_value() || role.value() != Role::Helper) return;
+
+            BadgesAPI::showBadge(badge);
+        }
+    );
+    BadgesAPI::registerBadge(
+        "challenge-progression-developer"_spr,
+        "GD Challenge Progression Developer",
+        "Developer of the list or the <cg>GD Challenge Progression Geode mod</c>!\n\n<cr>these ones pull the strings...</c>",
+        [] {
+            CCSprite* developer = CCSprite::createWithSpriteFrameName("GDCP_developer.png"_spr);
+            developer->setTag(3);
+            return developer;
+        },
+        [] (const Badge& badge, const UserInfo& info) {
+            if (!isEditor(info.accountID)) return;
+
+            auto role = getRole(info.accountID);
+            if (!role.has_value() || role.value() != Role::Dev) return;
+
+            BadgesAPI::showBadge(badge);
+        }
+    );
+    BadgesAPI::registerBadge(
+        "challenge-progression-co-owner"_spr,
+        "GD Challenge Progression Co-owner",
+        "Co-Owner of the GD Challenge Progression list!\n\n<cr>sadcraft, suck an egg already...</c>",
+        [] {
+            CCSprite* coOwner = CCSprite::createWithSpriteFrameName("GDCP_coOwner.png"_spr);
+            coOwner->setTag(2);
+            return coOwner;
+        },
+        [] (const Badge& badge, const UserInfo& info) {
+            if (!isEditor(info.accountID)) return;
+
+            auto role = getRole(info.accountID);
+            if (!role.has_value() || role.value() != Role::Admin) return;
+
+            BadgesAPI::showBadge(badge);
+        }
+    );
+    BadgesAPI::registerBadge(
+        "challenge-progression-owner"_spr,
+        "GD Challenge Progression Owner",
+        "The owner of the GD Challenge Progression list!\n\n<cr>there's only one of these...</c>",
+        [] {
+            CCSprite* owner = CCSprite::createWithSpriteFrameName("GDCP_owner.png"_spr);
+            owner->setTag(1);
+            return owner;
+        },
+        [] (const Badge& badge, const UserInfo& info) {
+            if (!isEditor(info.accountID)) return;
+
+            auto role = getRole(info.accountID);
+            if (!role.has_value() || role.value() != Role::Owner) return;
+
+            BadgesAPI::showBadge(badge);
+        }
+    );
+}

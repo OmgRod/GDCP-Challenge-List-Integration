@@ -1,5 +1,5 @@
 {
-	"geode": "5.0.0-beta.3",
+	"geode": "5.0.0-beta.4",
 	"gd": {
 		"win": "2.2081",
 		"android": "2.2081",
@@ -25,13 +25,8 @@
 		}
 	},
 	"dependencies": {
-		"geode.node-ids": {
-			"version": ">=1.20.1",
-			"required": true
-		},
-		"omgrod.tsl-api": {
-			"version": ">=1.0.0",
-			"required": true
-		}
+		"geode.node-ids": ">=1.20.1",
+		"jouca.badgesapi": ">=1.4.0",
+		"omgrod.tsl-api": ">=1.0.0"
 	}
 }

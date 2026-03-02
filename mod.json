@@ -1,14 +1,14 @@
 {
-	"geode": "4.10.0",
+	"geode": "5.20.0",
 	"gd": {
-		"win": "2.2074",
-		"android": "2.2074",
-		"mac": "2.2074",
-		"ios": "2.2074"
+		"win": "2.2081",
+		"android": "2.2081",
+		"mac": "2.2081",
+		"ios": "2.2081"
 	},
 	"id": "gdcpteam.challenge-list",
 	"name": "GDCP List Integration",
-	"version": "v2.1.3",
+	"version": "v2.1.4",
 	"developers": ["silenceglobally", "OmgRod", "Zilko"],
 	"description": "Challenge list for GD Challenge Progression",
 	"links": {

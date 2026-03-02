@@ -1,6 +1,6 @@
 #include "Includes.hpp"
 
-class InfoPopup : public geode::Popup<> {
+class InfoPopup : public geode::Popup {
 
 public:
 
@@ -8,7 +8,7 @@ public:
 
 private:
 
-    bool setup();
+    bool init() override;
 
 
 };

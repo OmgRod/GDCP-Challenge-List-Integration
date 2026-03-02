@@ -13,7 +13,7 @@ public:
 };
 
 
-class WeeklyPopup : public geode::Popup<>, public LevelManagerDelegate {
+class WeeklyPopup : public geode::Popup, public LevelManagerDelegate {
 
 public:
 
@@ -41,7 +41,7 @@ private:
 
     ~WeeklyPopup();
 
-    bool setup();
+    bool init() override;
 
     void showLevel(GJGameLevel* level);
 

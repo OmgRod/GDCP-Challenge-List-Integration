@@ -25,39 +25,43 @@ void Request::loadLevelNames(bool shouldLoadLevels, int page) {
 
     req.header("Content-Type", "application/json");
 
-    req.get(fmt::format("{}{}.json", listLink, "_list")).listen([shouldLoadLevels, page] (web::WebResponse* e) {
-        auto res = e->json();
-        GDCPListLayer* layer = Utils::getLayer();
+    auto listener = std::make_shared<async::TaskHolder<web::WebResponse>>();
 
-        if (res.isErr()) {
-            if (layer) layer->showError();
-            
-            return log::error("1. Failed to load level names: {}", res.unwrapErr());
-        }
+    listener->spawn(
+        req.get(fmt::format("{}{}.json", listLink, "_list")),
+        [listener, shouldLoadLevels, page](web::WebResponse value) {
+            auto res = value.json();
+            GDCPListLayer* layer = Utils::getLayer();
 
-        auto json = res.unwrap().asArray();
+            if (res.isErr()) {
+                if (layer) layer->showError();
+                
+                return log::error("1. Failed to load level names: {}", res.unwrapErr());
+            }
 
-        if (json.isErr()) {
-            if (layer) layer->showError();
-            
-            return log::error("2. Failed to load level names: {}", json.unwrapErr());
-        }
+            auto json = res.unwrap().asArray();
 
-        std::vector<std::string> names;
-        std::vector<std::string> realnames;
+            if (json.isErr()) {
+                if (layer) layer->showError();
+                
+                return log::error("2. Failed to load level names: {}", json.unwrapErr());
+            }
 
-        for (auto& value : json.unwrap()) {
-            std::string name = value.asString().unwrapOr("");
-            if (name.empty()) continue;
-            names.push_back(name);
-        }
+            std::vector<std::string> names;
+            std::vector<std::string> realnames;
 
-        Cache::setLevelNames(names);
+            for (auto& value : json.unwrap()) {
+                std::string name = value.asString().unwrapOr("");
+                if (name.empty()) continue;
+                names.push_back(name);
+            }
 
-        if (shouldLoadLevels)
-            loadPageLevels(page);
-        
-    });
+            Cache::setLevelNames(names);
+
+            if (shouldLoadLevels)
+                loadPageLevels(page);
+            }
+    );
 }
 
 void Request::loadPageLevels(int page) {
@@ -88,32 +92,35 @@ void Request::loadPageLevels(int page) {
 
         Utils::replace(name, ' ', "%20");
 
-        req.get(fmt::format("{}{}.json", listLink, name)).listen([i, page](web::WebResponse* e) {
-            auto res = e->json();
-            GDCPListLayer* layer = Utils::getLayer();
+        auto listener = std::make_shared<async::TaskHolder<web::WebResponse>>();
 
-            if (res.isErr()) {
-                if (layer) layer->showError();
+        listener->spawn(
+            req.get(fmt::format("{}{}.json", listLink, name)),
+            [listener, i, page](web::WebResponse value) {
+                auto res = value.json();
+                GDCPListLayer* layer = Utils::getLayer();
 
-                return log::error("1. Failed to load page levels: {}", res.unwrapErr());
-            }
+                if (res.isErr()) {
+                    if (layer) layer->showError();
 
-            auto json = res.unwrap();
+                    return log::error("1. Failed to load page levels: {}", res.unwrapErr());
+                }
 
-            int id = json["id"].asInt().unwrapOr(0);
+                auto json = res.unwrap();
 
-            if (id == 0) {
-                if (layer) layer->showError();
+                int id = json["id"].asInt().unwrapOr(0);
 
-                return log::error("2. Failed to load page levels: {}", res.unwrapErr());
-            }
+                if (id == 0) {
+                    if (layer) layer->showError();
 
-            Cache::addCount();
-            Cache::setLevelId(i, id);
+                    return log::error("2. Failed to load page levels: {}", res.unwrapErr());
+                }
 
-            if (Cache::getCount() >= levelsPerPage && layer)
-                layer->loadPage(getLevelsString(page));
-            
+                Cache::addCount();
+                Cache::setLevelId(i, id);
+
+                if (Cache::getCount() >= levelsPerPage && layer)
+                    layer->loadPage(getLevelsString(page));
         });
     }
 }
@@ -174,38 +181,41 @@ void Request::loadLevelNamesPlat(bool shouldLoadLevels, int page) {
 
     req.header("Content-Type", "application/json");
 
-    req.get(fmt::format("{}{}.json", platListLink, "_list")).listen([shouldLoadLevels, page] (web::WebResponse* e) {
-        auto res = e->json();
-        GDCPListLayer* layer = Utils::getLayer();
+    auto listener = std::make_shared<async::TaskHolder<web::WebResponse>>();
 
-        if (res.isErr()) {
-            if (layer) layer->showError();
-            
-            return log::error("1. Failed to load level names: {}", res.unwrapErr());
-        }
+    listener->spawn(
+        req.get(fmt::format("{}{}.json", platListLink, "_list")),
+        [listener, shouldLoadLevels, page](web::WebResponse value) {
+            auto res = value.json();
+            GDCPListLayer* layer = Utils::getLayer();
 
-        auto json = res.unwrap().asArray();
+            if (res.isErr()) {
+                if (layer) layer->showError();
+                
+                return log::error("1. Failed to load level names: {}", res.unwrapErr());
+            }
 
-        if (json.isErr()) {
-            if (layer) layer->showError();
-            
-            return log::error("2. Failed to load level names: {}", json.unwrapErr());
-        }
+            auto json = res.unwrap().asArray();
 
-        std::vector<std::string> names;
-        std::vector<std::string> realnames;
+            if (json.isErr()) {
+                if (layer) layer->showError();
+                
+                return log::error("2. Failed to load level names: {}", json.unwrapErr());
+            }
 
-        for (auto& value : json.unwrap()) {
-            std::string name = value.asString().unwrapOr("");
-            if (name.empty()) continue;
-            names.push_back(name);
-        }
+            std::vector<std::string> names;
+            std::vector<std::string> realnames;
 
-        Cache::setLevelNamesPlat(names);
+            for (auto& value : json.unwrap()) {
+                std::string name = value.asString().unwrapOr("");
+                if (name.empty()) continue;
+                names.push_back(name);
+            }
 
-        if (shouldLoadLevels)
-            loadPageLevelsPlat(page);
-        
+            Cache::setLevelNamesPlat(names);
+
+            if (shouldLoadLevels)
+                loadPageLevelsPlat(page);
     });
 }
 
@@ -237,34 +247,37 @@ void Request::loadPageLevelsPlat(int page) {
 
         Utils::replace(name, ' ', "%20");
 
-        req.get(fmt::format("{}{}.json", platListLink, name)).listen([i, page](web::WebResponse* e) {
-            auto res = e->json();
-            GDCPListLayer* layer = Utils::getLayer();
+        auto listener = std::make_shared<async::TaskHolder<web::WebResponse>>();
 
-            if (res.isErr()) {
-                if (layer) layer->showError();
-
-                return log::error("1. Failed to load page levels: {}", res.unwrapErr());
-            }
-
-            auto json = res.unwrap();
-
-            int id = json["id"].asInt().unwrapOr(0);
-
-            if (id == 0) {
-                if (layer) layer->showError();
+        listener->spawn(
+            req.get(fmt::format("{}{}.json", platListLink, name)),
+            [listener, i, page](web::WebResponse value) {
+                auto res = value.json();
+                GDCPListLayer* layer = Utils::getLayer();
 
                 if (res.isErr()) {
-                    return log::error("2. Failed to load page levels: {}", res.unwrapErr());
+                    if (layer) layer->showError();
+
+                    return log::error("1. Failed to load page levels: {}", res.unwrapErr());
                 }
-            }
 
-            Cache::addCount();
-            Cache::setLevelIdPlat(i, id);
+                auto json = res.unwrap();
 
-            if (Cache::getCount() >= levelsPerPage && layer)
-                layer->loadPage(getLevelsStringPlat(page));
-            
+                int id = json["id"].asInt().unwrapOr(0);
+
+                if (id == 0) {
+                    if (layer) layer->showError();
+
+                    if (res.isErr()) {
+                        return log::error("2. Failed to load page levels: {}", res.unwrapErr());
+                    }
+                }
+
+                Cache::addCount();
+                Cache::setLevelIdPlat(i, id);
+
+                if (Cache::getCount() >= levelsPerPage && layer)
+                    layer->loadPage(getLevelsStringPlat(page));
         });
     }
 }
@@ -315,54 +328,58 @@ void Request::loadEditors(bool shouldUpdateButtons) {
     auto req = web::WebRequest();
     req.header("Content-Type", "application/json");
 
-    req.get(fmt::format("{}{}.json", listLink, "_editors")).listen([shouldUpdateButtons](web::WebResponse* e) {
-        auto res = e->json();
+    auto listener = std::make_shared<async::TaskHolder<web::WebResponse>>();
 
-        if (res.isErr())
-            return log::error("1. Failed to load editors: {}", res.unwrapErr());
+    listener->spawn(
+       req.get(fmt::format("{}{}.json", listLink, "_editors")),
+        [listener, shouldUpdateButtons](web::WebResponse value) {
+            auto res = value.json();
 
-        auto arr = res.unwrap().asArray();
+            if (res.isErr())
+                return log::error("1. Failed to load editors: {}", res.unwrapErr());
 
-        if (arr.isErr())
-            return log::error("2. Failed to load editors: {}", arr.unwrapErr());
+            auto arr = res.unwrap().asArray();
 
-        std::unordered_map<Role, std::vector<EditorEntry>> names;
-        std::vector<EditorEntry> editorEntries;
+            if (arr.isErr())
+                return log::error("2. Failed to load editors: {}", arr.unwrapErr());
 
-        for (const matjson::Value& value : arr.unwrap()) {
-            std::string roleStr = value["role"].asString().unwrapOr("");
-            std::string name = value["name"].asString().unwrapOr("");
-            int accountID = value["accountID"].asInt().unwrap();
+            std::unordered_map<Role, std::vector<EditorEntry>> names;
+            std::vector<EditorEntry> editorEntries;
 
-            if (roleStr.empty() || name.empty()) continue;
+            for (const matjson::Value& value : arr.unwrap()) {
+                std::string roleStr = value["role"].asString().unwrapOr("");
+                std::string name = value["name"].asString().unwrapOr("");
+                int accountID = value["accountID"].asInt().unwrap();
 
-            Role role = Role::Other;
-            if (roleMap.contains(roleStr))
-                role = roleMap.at(roleStr);
+                if (roleStr.empty() || name.empty()) continue;
 
-            EditorEntry editor = {name, accountID, role};
+                Role role = Role::Other;
+                if (roleMap.contains(roleStr))
+                    role = roleMap.at(roleStr);
 
-            names[role].push_back(editor);
-            editorEntries.push_back(editor);
-        }
+                EditorEntry editor = {name, accountID, role};
 
-        std::string editors;
-
-        for (const auto& [role, roleNames] : names) {
-            editors += fmt::format("<c{}>", roleColors.at(role));
-            for (EditorEntry editor : roleNames) {
-                editors += fmt::format("{} ({}). [See profile](user:{})", editor.name, roleStrings.at(role), editor.accountID);
-                if (editor.name != roleNames.back().name) editors += "\n\n";
+                names[role].push_back(editor);
+                editorEntries.push_back(editor);
             }
-            editors += "</c>\n\n";
-        }
 
-        Cache::setEditors(editors);
-        Cache::setEditorsList(editorEntries);
+            std::string editors;
 
-        if (shouldUpdateButtons)
-            if (GDCPListLayer* layer = Utils::getLayer())
-                layer->updateButtons();
+            for (const auto& [role, roleNames] : names) {
+                editors += fmt::format("<c{}>", roleColors.at(role));
+                for (EditorEntry editor : roleNames) {
+                    editors += fmt::format("{} ({}). [See profile](user:{})", editor.name, roleStrings.at(role), editor.accountID);
+                    if (editor.name != roleNames.back().name) editors += "\n\n";
+                }
+                editors += "</c>\n\n";
+            }
+
+            Cache::setEditors(editors);
+            Cache::setEditorsList(editorEntries);
+
+            if (shouldUpdateButtons)
+                if (GDCPListLayer* layer = Utils::getLayer())
+                    layer->updateButtons();
     });
 }
 
@@ -370,26 +387,29 @@ void Request::loadWeekly(bool shouldUpdate) {
     auto req = web::WebRequest();
     req.header("Content-Type", "application/json");
 
-    req.get(fmt::format("{}{}", listLink, "_WEEKLY")).listen([shouldUpdate](web::WebResponse* e) {
-        auto res = e->string();
+    auto listener = std::make_shared<async::TaskHolder<web::WebResponse>>();
 
-        if (res.isErr())
-            return log::error("1. Failed to load weekly: {}", res.unwrapErr());
+    listener->spawn(
+        req.get(fmt::format("{}{}", listLink, "_WEEKLY")),
+        [listener, shouldUpdate](web::WebResponse value) {
+            auto res = value.string();
 
-        int id = geode::utils::numFromString<int>(res.unwrapOr("0")).unwrapOr(0);
+            if (res.isErr())
+                return log::error("1. Failed to load weekly: {}", res.unwrapErr());
 
-        if (id == 0)
-            return log::error("2. Failed to load weekly.");
+            int id = geode::utils::numFromString<int>(res.unwrapOr("0")).unwrapOr(0);
 
-        Cache::setCurrentWeekly(id);
+            if (id == 0)
+                return log::error("2. Failed to load weekly.");
 
-        if (Cache::getLocalWeekly() == 0) Cache::setLocalWeekly(id);
+            Cache::setCurrentWeekly(id);
 
-        if (shouldUpdate && id != 0) {
-            CCScene* scene = CCDirector::sharedDirector()->getRunningScene();
-            if (WeeklyPopup* popup = scene->getChildByType<WeeklyPopup>(0))
-                popup->loadLevel();
-        }
+            if (Cache::getLocalWeekly() == 0) Cache::setLocalWeekly(id);
 
+            if (shouldUpdate && id != 0) {
+                CCScene* scene = CCDirector::sharedDirector()->getRunningScene();
+                if (WeeklyPopup* popup = scene->getChildByType<WeeklyPopup>(0))
+                    popup->loadLevel();
+            }
     });
 }

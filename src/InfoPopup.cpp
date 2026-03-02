@@ -4,7 +4,7 @@
 
 InfoPopup* InfoPopup::create() {
     InfoPopup* ret = new InfoPopup();
-    if (ret->initAnchored(270, 250, "square01_001.png", CCRectZero)) {
+    if (ret->init()) {
         ret->autorelease();
         return ret;
     }
@@ -13,7 +13,9 @@ InfoPopup* InfoPopup::create() {
     return nullptr;
 }
 
-bool InfoPopup::setup() {
+bool InfoPopup::init() {
+    Popup::init(270, 250, "square01_001.png");
+
     setTitle("Staff Team");
     m_closeBtn->setVisible(false);
 

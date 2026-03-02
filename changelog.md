@@ -1,11 +1,11 @@
-# v2.1.3
+# v2.1.4
 
-- Switched to Badges API Reimagined
+* Port to gode v5 2.2.0871
 
 # v2.1.2
 
-- Fixed two crashes with weekly popup
-- Fixed bug with the fix for the compact lists incompatibility .
+* Fixed two crashes with weekly popup
+* Fixed bug with the fix for the compact lists incompatibility .
 
 # v2.1.1
 

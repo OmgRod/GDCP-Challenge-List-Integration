@@ -371,8 +371,11 @@ void GDCPListLayer::showPage(cocos2d::CCArray* levels) {
 }
 
 void GDCPListLayer::loadPage(const std::string& str) {
+        log::debug("0");
     if (str.empty())
         return showError();
+
+        log::debug("1: {}", str);
 
     GameLevelManager* glm = GameLevelManager::sharedState();
     glm->m_levelManagerDelegate = this;
@@ -380,6 +383,7 @@ void GDCPListLayer::loadPage(const std::string& str) {
 }
 
 void GDCPListLayer::loadLevelsFinished(cocos2d::CCArray* levels, char const*, int) {
+        log::debug("2: {}", levels);
     if (m_isPlatformer) {
         Cache::setCachedPagePlat(m_currentPage, levels);
         showPage(levels);

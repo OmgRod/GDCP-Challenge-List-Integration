@@ -17,7 +17,7 @@ WeeklyCell* WeeklyCell::create() {
 
 WeeklyPopup* WeeklyPopup::create() {
     WeeklyPopup* ret = new WeeklyPopup();
-    if (ret->initAnchored(420, 280)) {
+    if (ret->init()) {
         ret->autorelease();
         return ret;
     }
@@ -34,7 +34,9 @@ WeeklyPopup::~WeeklyPopup() {
     GameLevelManager::sharedState()->m_levelManagerDelegate = nullptr;
 }
 
-bool WeeklyPopup::setup() {
+bool WeeklyPopup::init() {
+    Popup::init(420, 280);
+    
     geode::addSideArt(m_mainLayer, SideArt::All, SideArtStyle::PopupGold);
 
     CCSprite* spr = CCSprite::createWithSpriteFrameName("weeklyTitle.png"_spr);

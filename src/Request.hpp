@@ -7,6 +7,8 @@ class Request {
 
 private:
 
+    static async::TaskHolder<web::WebResponse> m_listener;
+
     static std::string getLevelsString(int page);
     static std::string getLevelsStringPlat(int page);
 

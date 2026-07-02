@@ -1,3 +1,7 @@
+# v2.1.5
+
+* use badgeify
+
 # v2.1.4
 
 * Port to gode v5 2.2.0871
